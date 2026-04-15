@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Audio files (user's data)
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.ogg
+*.webm
+
+# Output files (user's transcripts)
+*_transcript.txt
+*_timestamps.txt
+*_claude_prompt.txt
+*_cleaned.wav
+batch_progress.json
+
+# Logs
+*.log
+transcriber.log
+
+# Model cache
+.cache/
+models/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# User folders
+audio/
+output/

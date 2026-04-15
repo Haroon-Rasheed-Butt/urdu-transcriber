@@ -1,0 +1,139 @@
+# Example Output - Urdu Meeting Transcription
+
+This folder shows what you can expect from the transcriber.
+
+## Example Workflow
+
+### Input
+A 30-minute Urdu team meeting recording: `team_meeting.mp3`
+
+### Command
+```bash
+python transcribe.py team_meeting.mp3 --clean-audio
+```
+
+### Output Files
+
+#### 1. team_meeting_urdu_transcript.txt
+```
+میٹنگ شروع کرتے ہیں۔ آج ہم پروجیکٹ کی منصوبہ بندی کے بارے میں بات کریں گے۔ 
+پہلا موضوع بجٹ ہے۔ ہمیں اس ماہ کے اخراجات پر نظر ڈالنی ہوگی۔ علی صاحب، 
+آپ نے رپورٹ تیار کی ہے؟ جی ہاں، میں نے سب تفصیلات جمع کر لی ہیں۔...
+```
+*(Full Urdu transcript of the meeting)*
+
+#### 2. team_meeting_timestamps.txt
+```
+[0.00s -> 3.45s] میٹنگ شروع کرتے ہیں۔
+[3.45s -> 8.23s] آج ہم پروجیکٹ کی منصوبہ بندی کے بارے میں بات کریں گے۔
+[8.23s -> 12.10s] پہلا موضوع بجٹ ہے۔
+...
+```
+*(Transcript with timestamps for reference)*
+
+#### 3. team_meeting_claude_prompt.txt
+```
+This is a transcript from a meeting conducted in Urdu:
+
+میٹنگ شروع کرتے ہیں۔ آج ہم پروجیکٹ کی منصوبہ بندی کے بارے میں بات کریں گے...
+
+Please:
+1. Translate this entire transcript to professional English
+2. Structure it as a formal meeting memo with:
+   - Meeting Summary (2-3 sentences highlighting key points)
+   - Key Discussion Points (main topics covered)
+   - Decisions Made (concrete decisions and agreements)
+   - Action Items (tasks with responsible parties if mentioned)
+   - Next Steps (planned follow-ups)
+
+Format it as a professional business document with clear sections.
+```
+*(Copy this entire file and paste into Claude)*
+
+### Claude's Output (after pasting the prompt)
+
+```
+MEETING MEMO
+
+Meeting Date: [Date from context]
+Participants: Team Members
+
+MEETING SUMMARY
+The team convened to discuss project planning and budget allocation for the 
+current month. Key financial reports were reviewed, and responsibilities were 
+assigned for the upcoming phases of the project. The meeting concluded with 
+agreement on next steps and timeline adjustments.
+
+KEY DISCUSSION POINTS
+
+1. Budget Review
+   - Monthly expenditure analysis was conducted
+   - Ali presented detailed financial reports
+   - All departments' spending was reviewed
+
+2. Project Timeline
+   - Current progress against milestones was assessed
+   - Some delays were identified in development phase
+   - Resource allocation concerns were raised
+
+3. Resource Management
+   - Discussion on team capacity and workload
+   - Need for additional support in specific areas
+   - Cross-functional collaboration opportunities explored
+
+DECISIONS MADE
+
+1. Budget allocation for Q2 approved with minor adjustments
+2. Timeline extended by one week to accommodate quality assurance
+3. Additional team member to be hired for backend development
+4. Weekly check-ins to be implemented starting next week
+
+ACTION ITEMS
+
+1. Ali - Finalize revised budget proposal by Friday
+2. Development Team - Submit updated timeline by Wednesday
+3. HR - Initiate hiring process for backend developer
+4. Team Lead - Schedule weekly progress meetings
+
+NEXT STEPS
+
+- Budget proposal review meeting: Friday 2 PM
+- Updated timeline presentation: Next Monday
+- Resume screening for new position: Start immediately
+- First weekly check-in: Next Thursday
+```
+
+## Processing Stats
+
+- **Audio Duration:** 30 minutes
+- **Processing Time:** ~45 minutes (on CPU)
+- **Transcript Length:** ~2,400 words (Urdu)
+- **Accuracy:** ~75% (typical for Urdu with clear audio)
+- **File Size:** Original 28 MB → Cleaned 12 MB WAV
+
+## Tips for Best Results
+
+1. **Clear Audio:** Background noise should be minimal
+2. **Single Language:** Works best when meeting is entirely in Urdu
+3. **Review Before Claude:** Check Urdu transcript for obvious errors
+4. **Customize Prompt:** Edit claude_prompt.txt for specific needs
+
+## Common Use Cases
+
+### Daily Standup
+```bash
+python transcribe.py standup.mp3 --no-clean
+```
+Fast processing, skip noise reduction for short meetings
+
+### Important Client Meeting
+```bash
+python transcribe.py client_meeting.mp3 --clean-audio --beam-size 10
+```
+Maximum quality settings
+
+### Batch Weekly Meetings
+```bash
+python batch_transcribe.py week1.mp3 week2.mp3 week3.mp3
+```
+Process multiple meetings at once

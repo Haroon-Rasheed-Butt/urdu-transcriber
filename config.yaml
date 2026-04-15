@@ -1,0 +1,46 @@
+# Configuration for Urdu Meeting Transcriber
+model:
+  size: "large-v3"
+  device: "auto"
+  compute_type: "int8"
+
+audio:
+  noise_reduction: true
+  sample_rate: 16000
+  normalize_audio: true
+
+transcription:
+  language: "ur"
+  task: "transcribe"
+  beam_size: 5
+  best_of: 5
+  temperature: 0.0
+  vad_filter: true
+  vad_parameters:
+    threshold: 0.5
+    min_speech_duration_ms: 250
+    min_silence_duration_ms: 500
+  word_timestamps: true
+
+output:
+  save_urdu_transcript: true
+  save_claude_prompt: true
+  include_timestamps: true
+  format: "txt"
+
+claude:
+  prompt_template: |
+    This is a transcript from a meeting conducted in Urdu:
+    
+    {transcript}
+    
+    Please:
+    1. Translate this entire transcript to professional English
+    2. Structure it as a formal meeting memo with:
+       - Meeting Summary (2-3 sentences)
+       - Key Discussion Points
+       - Decisions Made
+       - Action Items
+       - Next Steps
+    
+    Format as a professional business document.

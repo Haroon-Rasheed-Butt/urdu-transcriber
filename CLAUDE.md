@@ -59,11 +59,12 @@ python batch_transcribe.py audio/
 ```
 transcribe.py          ← Entry point: CLI arg parsing, orchestration, output saving
 batch_transcribe.py    ← Loops over a directory, shells out to transcribe.py per file
+config.py              ← Reads config.yaml → exposes settings as Python constants
 config.yaml            ← All runtime defaults (model, device, VAD params, prompt template)
 utils/
-  whisper_helper.py    ← load_whisper_model(), transcribe_audio() using faster-whisper
-  audio_cleaner.py     ← clean_audio(): noise reduction via noisereduce + librosa (16 kHz)
-  claude_formatter.py  ← generate_claude_prompt(), generate_custom_prompt()
+  whisper_helper.py    ← load_whisper_model(), transcribe_audio(), estimate_processing_time()
+  audio_cleaner.py     ← clean_audio(), get_audio_info(), validate_audio_file()
+  claude_formatter.py  ← create_claude_prompt(), save_claude_prompt(), get_template(), 5 prompt templates
   __init__.py          ← Re-exports all public functions from the three modules above
 ```
 
@@ -73,17 +74,6 @@ utils/
 - `urdu_transcripts/<stem>_urdu.txt` — raw Urdu transcript
 - `claude_prompts/<stem>_prompt.txt` — formatted prompt; user pastes this into Claude manually
 - `logs/<stem>_log.json` — processing metadata
-
-## Known Inconsistencies
-
-`transcribe.py` currently imports from modules and uses classes that don't match the actual `utils/` implementations:
-
-- Imports `utils.whisper_wrapper` → actual file is `utils/whisper_wrapper.py` (does **not** exist; use `utils/whisper_helper.py`)
-- Uses `WhisperTranscriber` class → `whisper_helper.py` exposes plain functions, not a class
-- Imports `create_claude_prompt`, `save_claude_prompt`, `get_template` → `claude_formatter.py` only has `generate_claude_prompt` and `generate_custom_prompt`
-- Imports `config` as a Python module → only `config.yaml` exists (no `config.py`)
-
-The stable, working API is what `utils/__init__.py` exports: `load_whisper_model`, `transcribe_audio`, `clean_audio`, `generate_claude_prompt`, `generate_custom_prompt`.
 
 ## Configuration
 

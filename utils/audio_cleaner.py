@@ -1,12 +1,59 @@
 """
 Audio Cleaning Utilities
-Reduces noise and normalizes audio
+Reduces noise, normalizes audio, and provides audio file helpers.
 """
 
 import noisereduce as nr
 import soundfile as sf
 import librosa
 from pathlib import Path
+
+
+def validate_audio_file(audio_path, supported_formats):
+    """
+    Check that the audio file exists and has a supported extension.
+
+    Args:
+        audio_path: Path string to the audio file.
+        supported_formats: List of allowed extensions (e.g. [".mp3", ".wav"]).
+
+    Returns:
+        True if valid, False otherwise (prints an error message on failure).
+    """
+    path = Path(audio_path)
+    if not path.exists():
+        print(f"Error: File not found: {audio_path}")
+        return False
+    if path.suffix.lower() not in supported_formats:
+        print(f"Error: Unsupported format '{path.suffix}'")
+        print(f"Supported formats: {', '.join(supported_formats)}")
+        return False
+    return True
+
+
+def get_audio_info(audio_path):
+    """
+    Return basic information about an audio file.
+
+    Args:
+        audio_path: Path string to the audio file.
+
+    Returns:
+        Dict with keys: duration_seconds, duration_formatted, sample_rate.
+    """
+    duration = librosa.get_duration(path=audio_path)
+    info = sf.info(audio_path)
+    minutes, seconds = divmod(int(duration), 60)
+    hours, minutes = divmod(minutes, 60)
+    if hours:
+        formatted = f"{hours}h {minutes}m {seconds}s"
+    else:
+        formatted = f"{minutes}m {seconds}s"
+    return {
+        "duration_seconds": duration,
+        "duration_formatted": formatted,
+        "sample_rate": info.samplerate,
+    }
 
 def clean_audio(audio_path, output_dir=None):
     """

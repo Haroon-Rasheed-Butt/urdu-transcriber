@@ -150,3 +150,51 @@ def transcribe_audio(model, audio_path, settings):
     print(f"   Total segments: {segment_count}")
     
     return full_transcript.strip(), segments_list
+
+
+def estimate_processing_time(duration_seconds, model_size="large-v3", device="cpu"):
+    """
+    Rough estimate of transcription wall-clock time.
+
+    Based on benchmarks from RTX 3050 4 GB / AMD Ryzen / 32 GB RAM.
+    CPU large-v3 runs at roughly 2-3x real-time; GPU is ~4-8x faster.
+
+    Args:
+        duration_seconds: Length of the audio in seconds.
+        model_size: Whisper model size string.
+        device: "cpu" or "cuda".
+
+    Returns:
+        Estimated seconds to process.
+    """
+    # Multipliers: how many seconds of wall-clock per second of audio
+    cpu_multipliers = {
+        "tiny": 0.3,
+        "base": 0.5,
+        "small": 1.0,
+        "medium": 1.5,
+        "large-v3": 2.5,
+    }
+    gpu_multipliers = {
+        "tiny": 0.05,
+        "base": 0.1,
+        "small": 0.15,
+        "medium": 0.25,
+        "large-v3": 0.4,
+    }
+    multipliers = gpu_multipliers if device == "cuda" else cpu_multipliers
+    factor = multipliers.get(model_size, 2.5)
+    return duration_seconds * factor
+
+
+def format_time_estimate(seconds):
+    """
+    Format seconds into a human-readable string like '~12 min' or '~2 h 30 min'.
+    """
+    minutes = int(seconds / 60)
+    if minutes < 1:
+        return "< 1 min"
+    hours, mins = divmod(minutes, 60)
+    if hours:
+        return f"~{hours} h {mins} min"
+    return f"~{minutes} min"
